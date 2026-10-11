@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -77,7 +78,7 @@ public final class Harvester {
                 for (int dz = -RADIUS; dz <= RADIUS; dz++) {
                     BlockPos pos = center.offset(dx, 0, dz);
                     BlockState state = level.getBlockState(pos);
-                    if (!isMature(state) || !player.canInteractWithBlock(pos, 0.0)) {
+                    if (!isMature(state) || !inReach(player, pos)) {
                         continue;
                     }
                     Item seed = SEEDS.get(state.getBlock());
@@ -98,7 +99,7 @@ public final class Harvester {
             // Vrať inventář do původního stavu (v opačném pořadí než se prohazovalo).
             while (!swaps.isEmpty()) {
                 int[] s = swaps.pop();
-                gm.handleInventoryMouseClick(player.inventoryMenu.containerId, s[0], s[1], ClickType.SWAP, player);
+                gm.handleContainerInput(player.inventoryMenu.containerId, s[0], s[1], ContainerInput.SWAP, player);
             }
             inv.setSelectedSlot(originalSlot);
         }
@@ -106,16 +107,15 @@ public final class Harvester {
         if (harvested == 0) {
             msg(player, "nothing");
         } else {
-            player.swing(InteractionHand.MAIN_HAND);
-            player.displayClientMessage(
-                    Component.translatable("message.megaharvest.result", harvested, replanted), true);
+            player.sendSystemMessage(
+                    Component.translatable("message.megaharvest.result", harvested, replanted));
         }
     }
 
     private static boolean replant(Minecraft mc, LocalPlayer player, MultiPlayerGameMode gm,
                                    BlockPos pos, Item seed, Deque<int[]> swaps) {
         BlockPos ground = pos.below();
-        if (!player.canInteractWithBlock(ground, 0.0) || !equipSeed(gm, player, seed, swaps)) {
+        if (!inReach(player, ground) || !equipSeed(gm, player, seed, swaps)) {
             return false;
         }
         BlockHitResult place = new BlockHitResult(
@@ -139,12 +139,17 @@ public final class Harvester {
         }
         for (int i = 9; i < 36; i++) {
             if (inv.getItem(i).is(seed)) {
-                gm.handleInventoryMouseClick(player.inventoryMenu.containerId, i, selected, ClickType.SWAP, player);
+                gm.handleContainerInput(player.inventoryMenu.containerId, i, selected, ContainerInput.SWAP, player);
                 swaps.push(new int[] {i, selected});
                 return true;
             }
         }
         return false;
+    }
+
+    /** Vanilla dosah pro bloky je 4,5 (server toleruje o něco víc). */
+    private static boolean inReach(LocalPlayer player, BlockPos pos) {
+        return new AABB(pos).distanceToSqr(player.getEyePosition()) <= 4.5 * 4.5;
     }
 
     private static boolean isMature(BlockState state) {
@@ -160,6 +165,6 @@ public final class Harvester {
     }
 
     private static void msg(LocalPlayer player, String key) {
-        player.displayClientMessage(Component.translatable("message.megaharvest." + key), true);
+        player.sendSystemMessage(Component.translatable("message.megaharvest." + key));
     }
 }

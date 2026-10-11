@@ -3,7 +3,7 @@ package cz.megaharvest;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.Identifier;
 
@@ -17,8 +17,8 @@ public class MegaHarvestClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        harvestKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
-                "key.megaharvest.harvest", InputConstants.Type.KEYSYM, InputConstants.KEY_H, CATEGORY));
+        harvestKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+                "key.megaharvest.harvest", InputConstants.KEY_H, CATEGORY));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             // Jeden stisk = jedna sklizeň. Případné nahromaděné stisky zahodíme,
