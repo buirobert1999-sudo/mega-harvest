@@ -1,0 +1,7 @@
+{
+  "key.megaharvest.harvest": "Harvest 3x3",
+  "key.category.megaharvest.main": "MegaHarvest",
+  "message.megaharvest.no_target": "MegaHarvest: aim at a crop or at the farmland below it.",
+  "message.megaharvest.nothing": "MegaHarvest: no mature crops in the 3x3 area.",
+  "message.megaharvest.result": "MegaHarvest: harvested %1$s, replanted %2$s."
+}

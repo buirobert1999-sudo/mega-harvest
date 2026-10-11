@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "megaharvest",
+  "version": "${version}",
+  "name": "MegaHarvest",
+  "description": "Jedním stiskem klávesy sklidí dozrálé plodiny v oblasti 3x3 a znovu je zasadí, pokud jsou k dispozici semena. Pouze klient.",
+  "authors": ["MegaHarvest"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["cz.megaharvest.MegaHarvestClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

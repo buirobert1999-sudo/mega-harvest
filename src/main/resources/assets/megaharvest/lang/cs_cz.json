@@ -1,0 +1,7 @@
+{
+  "key.megaharvest.harvest": "Sklidit 3x3",
+  "key.category.megaharvest.main": "MegaHarvest",
+  "message.megaharvest.no_target": "MegaHarvest: zamiř na plodinu nebo na půdu pod ní.",
+  "message.megaharvest.nothing": "MegaHarvest: v oblasti 3x3 nejsou žádné dozrálé plodiny.",
+  "message.megaharvest.result": "MegaHarvest: sklizeno %1$s, znovu zasazeno %2$s."
+}
